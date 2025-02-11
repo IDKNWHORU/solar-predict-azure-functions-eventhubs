@@ -95,9 +95,10 @@ def solar_predict_eventhubs_scheduler(timer: func.TimerRequest, event: func.Out[
     event.set(solar_data_list)
 
     # 환경 변수에서 웹훅 URL을 확인합니다.
-    if os.environ.get("AzureWebhookUrl") is not None:
+    if os.environ.get("AzureWebHookUrl") is not None:
+        logging.info("환경 변수에 웹훅 URL이 설정되어있습니다. 웹훅을 요청합니다.")
         # 웹훅 URL을 불러옵니다.
-        webhook_url = os.environ["AzureWebhookUrl"]
+        webhook_url = os.environ["AzureWebHookUrl"]
         # 웹훅 요청의 헤더 설정
         webhook_headers = { "Content-Type": "application/json" }
         # 웹훅에 보낼 데이터 형식 설정
@@ -122,6 +123,8 @@ def solar_predict_eventhubs_scheduler(timer: func.TimerRequest, event: func.Out[
         # 웹훅에 POST 요청을 보내고 응답을 확인합니다.
         response = requests.post(webhook_url, headers=webhook_headers, data=webhook_payload)
         response.raise_for_status() # 요청 실패 시 오류를 발생시킵니다.
+    else:
+        logging.info("웹훅 URL이 설정되어 있지 않습니다. 웹 훅 요청을 생략합니다.")
 
     # 데이터 수집에서 제외된 행의 인덱스를 로그로 기록합니다.
     logging.info(f"{skiped_index}번 행은 데이터 수집에서 제외되었습니다.")

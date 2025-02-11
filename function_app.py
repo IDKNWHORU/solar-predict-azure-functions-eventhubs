@@ -11,7 +11,7 @@ import os
 # Azure Functions 앱을 생성합니다.
 app = func.FunctionApp()
 
-# 매일 자정에 실행되는 타이머 트리거를 설정합니다.
+# (UTC 시간대 기준) 매일 자정에 실행되는 타이머 트리거를 설정합니다.
 @app.timer_trigger(schedule="0 0 0 * * *", arg_name="timer", run_on_startup=False, use_monitor=False)
 # Event Hub에 데이터를 보내는 출력을 설정합니다.
 @app.event_hub_output(arg_name="event", event_hub_name= os.environ["SolarEventHubName"], connection="SolarEventHubConnectionString")

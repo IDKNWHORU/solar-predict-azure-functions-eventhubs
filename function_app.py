@@ -99,29 +99,30 @@ def solar_predict_eventhubs_scheduler(timer: func.TimerRequest, event: func.Out[
         logging.info("환경 변수에 웹훅 URL이 설정되어있습니다. 웹훅을 요청합니다.")
         # 웹훅 URL을 불러옵니다.
         webhook_url = os.environ["AzureWebHookUrl"]
-        # 웹훅 요청의 헤더 설정
-        webhook_headers = { "Content-Type": "application/json" }
         # 웹훅에 보낼 데이터 형식 설정
-        webhook_payload = json.dumps({
-            "embeds": [
+        webhook_payload = {
+            "type": "message",
+            "attachments": [
                 {
-                    "title": "Azure Function Log",
-                    "color": "10038562",
-                    "fields": [
-                        {
-                            "name": "message",
-                            "value": "태양광 예측 데이터 수집 스케줄러가 실행되었습니다."
-                        },
-                         {
-                             "name": "Datetime",
-                             "value": kst_timestamp.strftime("%Y-%m-%d %H:00") # KST 시간 형식으로 작성합니다.
-                         }
-                    ]
+                    "contentType": "application/vnd.microsoft.card.adaptive",
+                    "contentUrl": None,
+                    "content": {
+                        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                        "type": "AdaptiveCard",
+                        "version": "1.2",
+                        "body": [
+                            {
+                                "type": "TextBlock",
+                                "text": "태양광 예측 데이터 수집 스케줄러가 실행되었습니다."
+                            }
+                        ]
+                    }
                 }
             ]
-        })
+        }
         # 웹훅에 POST 요청을 보내고 응답을 확인합니다.
-        response = requests.post(webhook_url, headers=webhook_headers, data=webhook_payload)
+        response = requests.post(webhook_url, json=webhook_payload)
+        logging.info(f"웹훅 실행 결과: {response.status_code}")
         response.raise_for_status() # 요청 실패 시 오류를 발생시킵니다.
     else:
         logging.info("웹훅 URL이 설정되어 있지 않습니다. 웹 훅 요청을 생략합니다.")

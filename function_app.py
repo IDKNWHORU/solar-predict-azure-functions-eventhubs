@@ -99,6 +99,7 @@ def solar_predict_eventhubs_scheduler(timer: func.TimerRequest, event: func.Out[
         logging.info("환경 변수에 웹훅 URL이 설정되어있습니다. 웹훅을 요청합니다.")
         # 웹훅 URL을 불러옵니다.
         webhook_url = os.environ["AzureWebHookUrl"]
+        # Teams Incoming Webhook 참고 자료: https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using?tabs=cURL%2Ctext1
         # 웹훅에 보낼 데이터 형식 설정
         webhook_payload = {
             "type": "message",
